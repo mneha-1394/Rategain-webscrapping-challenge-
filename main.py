@@ -14,7 +14,7 @@ def extract_blog_data(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Extract blog details (modify as per the actual HTML structure)
-    blog_titles = [title.text.strip() for title in soup.select('#post-3301 > div > div.clearfix.post-content > div:nth-child(3) > div > div > div > div.blog-items.row.blog-type-horizontal.blog-5dccfdae54fca.isotope > article:nth-child(1) > div > div.content > h6')]
+    blog_titles = [title.text.strip() for title in soup.select('#post-3301 > div > div.clearfix.post-content > div:nth-child(3) > div > div > div > div.blog-items.row.blog-type-horizontal.blog-5dccfdae54fca.isotope > article:nth-child(1) > div > div.content > h6 > a')]
     blog_dates = [date.text.strip() for date in soup.select('#post-3301 > div > div.clearfix.post-content > div:nth-child(3) > div > div > div > div.blog-items.row.blog-type-horizontal.blog-5dccfdae54fca.isotope > article:nth-child(1) > div > div.content > div.blog-detail > div:nth-child(1) > span')]
     blog_image_urls = [image['src'] for image in soup.select('#post-3301 > div > div.clearfix.post-content > div:nth-child(3) > div > div > div > div.blog-items.row.blog-type-horizontal.blog-5dccfdae54fca.isotope > article:nth-child(1) > div > div.img > a')]
     blog_likes_count = [likes.text.strip() for likes in soup.select('#zilla-likes-25730 > i')]
