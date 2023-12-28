@@ -1,2 +1,7 @@
 # Rategain-webscrapping-challenge
-site has forbbiden the access.
+
+the packages used are:
+CloudScraper
+BeautifulSoup
+Pandas
+Tqdm
