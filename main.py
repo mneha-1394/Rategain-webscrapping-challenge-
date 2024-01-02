@@ -21,11 +21,11 @@ def scrape():
                     if image.find('a').get('href'):
                        blogimage = image.find('a').get('href')
                 if blog.find('div', class_='content'):
-                    blogtd = blog.find('div', class_='content')
-                    if blogtd.find('h6'):
-                        blogtitle = blogtd.find('h6').text
-                    if blogtd.find('span'):
-                        blogdate = blogtd.find('span').text
+                    blogtitledate = blog.find('div', class_='content')
+                    if blogtitledate.find('h6'):
+                        blogtitle = blogtitledate.find('h6').text
+                    if blogtitledate.find('span'):
+                        blogdate = blogtitledate.find('span').text
 
                 if blog.find('a', class_='zilla-likes'):
                     likes = blog.find('a', class_='zilla-likes')
