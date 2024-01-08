@@ -1,44 +1,72 @@
+import streamlit as st
 import cloudscraper
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import pandas as pd    
 
-def scrape():
+def scrape(url):
     data_list=[]
     try: 
-        for page in tqdm(range(47)):
-            blogtitle=''
-            blogimage=''
-            blogdate=''
-            bloglikes=''
+
+        blog_data = {
+            'Title': [],
+            'Date': [],
+            'Image URL': [],
+            'Likes Count': []
+        }
+        for page in tqdm(range(1,47)):
             link='https://rategain.com/blog/page/'+ str(page)+'/'
             scraper=cloudscraper.create_scraper()
             res=scraper.get(link)
-            soup = BeautifulSoup(res.text,'html.parser')
-            for blog in soup.find_all('div',class_='wrap'):
-                if blog.find('div', class_='img'):
-                    image = blog.find('div', class_='img')
-                    if image.find('a').get('href'):
-                       blogimage = image.find('a').get('href')
-                if blog.find('div', class_='content'):
-                    blogtitledate = blog.find('div', class_='content')
-                    if blogtitledate.find('h6'):
-                        blogtitle = blogtitledate.find('h6').text
-                    if blogtitledate.find('span'):
-                        blogdate = blogtitledate.find('span').text
+            soup=BeautifulSoup(res.text,'html.parser')
+        # Getting the division where all the blog posts are present
+            blogs_div = soup.find('div', class_='blog-items')
 
-                if blog.find('a', class_='zilla-likes'):
-                    likes = blog.find('a', class_='zilla-likes')
-                    if likes.find('span'):
-                        bloglikes = likes.find('span').text
-                data_list.append([blogtitle,blogimage,blogdate,bloglikes])
+        # Check if blog posts are present
+            if blogs_div is None:
+                print("No blog posts found.")
+                print(url)
+            else:
+                blog_posts = blogs_div.find_all('article', class_='blog-item')
+                print(f"Found {len(blog_posts)} blog posts.")
+                for post in blog_posts:
+                    title = post.find('h6').find('a').text
+                    title = title.replace('â€™', '\'').strip()
+                    date = post.find('div', class_='bd-item').find('span').text
+                    Image_URL = post.find('div', class_='img')
+                    if Image_URL:
+                        Image_URL = Image_URL.find('a')['data-bg']
+                    else:
+                        Image_URL = ""
+
+                    Likes_Count_text = post.find('a', class_='zilla-likes').find('span').text
+                    Likes_Count = int(''.join(filter(str.isdigit, Likes_Count_text)))
+                    blog_data['Title'].append(title)
+                    blog_data['Date'].append(date)
+                    blog_data['Image URL'].append(Image_URL)
+                    blog_data['Likes Count'].append(Likes_Count)
     finally:
         print('Completed')
-    return data_list 
+    return blog_data
 
-data_list= scrape()
-df=pd.DataFrame(data_list,columns=['Blog Title','Blog Image URL','Blog Date','Blog Likes'])
-df.to_csv("BlogData.csv",index=False)
+st.title("Blog Data Extraction")
 
+# User input: URL
+url = st.text_input("Enter Blog URL:")
 
+if st.button("Extract Data"):
+    if not url:
+        st.warning("Please enter a valid URL.")
+    else:
+        # Extract blog data from the provided URL
+        extracted_data = scrape(url)
 
+        # Create a DataFrame from the extracted data
+        df = pd.DataFrame(extracted_data)
+
+        # Display the extracted data in the Streamlit app
+        st.dataframe(df)
+
+        # Save the DataFrame to an Excel file
+        df.to_csv('blog_data.csv', index=False)
+        st.success("Data extraction and Excel file creation complete.")
