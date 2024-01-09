@@ -31,7 +31,6 @@ def scrape(url):
                 print(f"Found {len(blog_posts)} blog posts.")
                 for post in blog_posts:
                     title = post.find('h6').find('a').text
-                    title = title.replace('â€™', '\'').strip()
                     date = post.find('div', class_='bd-item').find('span').text
                     Image_URL = post.find('div', class_='img')
                     if Image_URL:
