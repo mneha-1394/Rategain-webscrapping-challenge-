@@ -65,6 +65,6 @@ if st.button("Extract Data"):
         # Display the extracted data in the Streamlit app
         st.dataframe(df)
 
-        # Save the DataFrame to an Excel file
+        # Save the DataFrame to an csv file
         df.to_csv('blog_data.csv', index=False)
         st.success("Data extraction and Excel file creation complete.")
