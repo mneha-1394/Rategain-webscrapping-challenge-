@@ -5,7 +5,6 @@ from tqdm import tqdm
 import pandas as pd    
 
 def scrape(url):
-    data_list=[]
     try: 
 
         blog_data = {
@@ -15,7 +14,7 @@ def scrape(url):
             'Likes Count': []
         }
         for page in tqdm(range(1,47)):
-            link='https://rategain.com/blog/page/'+ str(page)+'/'
+            link= f'{url}page/{page}/'
             scraper=cloudscraper.create_scraper()
             res=scraper.get(link)
             soup=BeautifulSoup(res.text,'html.parser')
